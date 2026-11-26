@@ -34,8 +34,16 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>The camera is used to photograph prescriptions and for video consultations with your doctor.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Riders: while you have an active delivery, your location is shared with the customer and the pharmacy so they can follow the delivery live. Sharing stops automatically once the order is delivered or cancelled.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Riders: your location is shared with the customer only while you have an active delivery, so they can track their order live. Customers: your location helps us fill in your delivery address.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The microphone is used for audio and video consultations with your doctor.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose a photo of your prescription to upload with your order.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
