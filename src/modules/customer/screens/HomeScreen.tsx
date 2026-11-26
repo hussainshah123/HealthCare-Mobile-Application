@@ -17,6 +17,7 @@ import { useAuth } from '../../../store/AuthContext';
 import { colors, radius, spacing, typography } from '../../../theme';
 import { useAsync } from '../../../utils/useAsync';
 import { DoctorListItem } from '../components/DoctorListItem';
+import { MedicineCard } from '../components/MedicineCard';
 import { useCustomerNav } from '../hooks/useCustomerNav';
 
 export function HomeScreen() {
@@ -25,11 +26,12 @@ export function HomeScreen() {
   const [search, setSearch] = useState('');
 
   const home = useAsync(async () => {
-    const [categories, doctors] = await Promise.all([
+    const [categories, doctors, medicines] = await Promise.all([
       catalogueApi.categories(),
       doctorsApi.list({ page: 1, limit: 5 }),
+      catalogueApi.medicines({ page: 1, limit: 10 }),
     ]);
-    return { categories, doctors: doctors.items };
+    return { categories, doctors: doctors.items, medicines: medicines.items };
   });
 
   const submitSearch = () => {
@@ -114,6 +116,38 @@ export function HomeScreen() {
             <Text style={typography.caption}>No categories yet.</Text>
           )}
 
+          {home.data?.medicines.length ? (
+            <>
+              <View style={styles.sectionRow}>
+                <SectionTitle>Popular medicines</SectionTitle>
+                <Button
+                  title="See all"
+                  variant="ghost"
+                  small
+                  onPress={() =>
+                    nav.navigate('MedicineList', { title: 'All medicines' })
+                  }
+                />
+              </View>
+              <FlatList
+                horizontal
+                data={home.data.medicines}
+                keyExtractor={m => m.id}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.products}
+                renderItem={({ item }) => (
+                  <MedicineCard
+                    medicine={item}
+                    width={150}
+                    onPress={() =>
+                      nav.navigate('MedicineDetail', { medicineId: item.id })
+                    }
+                  />
+                )}
+              />
+            </>
+          ) : null}
+
           <View style={styles.sectionRow}>
             <SectionTitle>Consult a doctor</SectionTitle>
             <Button
@@ -158,6 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   categoryText: { fontWeight: '600', color: colors.text, textAlign: 'center' },
+  products: { gap: spacing.md, paddingBottom: spacing.sm, paddingRight: spacing.lg },
   sectionRow: {
     flexDirection: 'row',
     alignItems: 'center',

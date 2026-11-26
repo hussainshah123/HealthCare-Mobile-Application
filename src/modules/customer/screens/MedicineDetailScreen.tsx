@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Alert, Image, StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import { ProductArt } from '../../../components/ProductArt';
 import { catalogueApi } from '../../../api/catalogue';
 import { cartApi } from '../../../api/cart';
 import {
@@ -113,17 +114,38 @@ export function MedicineDetailScreen({
         </View>
       }
     >
-      {med.imageUrl ? (
-        <Image
-          source={{ uri: med.imageUrl }}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      ) : null}
-      <Text style={typography.h2}>{med.name}</Text>
-      <Text style={typography.caption}>
-        {[med.brand, med.manufacturer, med.dosage].filter(Boolean).join(' · ')}
+      <ProductArt
+        form={med.form}
+        colorKey={med.name}
+        imageUrl={med.imageUrl}
+        size={200}
+        style={styles.art}
+      />
+      <View style={styles.tagRow}>
+        {med.form ? <Text style={styles.tag}>{med.form}</Text> : null}
+        {med.packSize ? <Text style={styles.tag}>{med.packSize}</Text> : null}
+        {med.requiresPrescription ? (
+          <Text style={[styles.tag, styles.rxTag]}>Prescription</Text>
+        ) : (
+          <Text style={[styles.tag, styles.otcTag]}>
+            No prescription needed
+          </Text>
+        )}
+      </View>
+      <Text style={typography.h1}>{med.name}</Text>
+      <Text style={[typography.caption, styles.byline]}>
+        {[med.brand, med.manufacturer].filter(Boolean).join(' · ')}
       </Text>
+      {offers.length ? (
+        <Text style={styles.bestPrice}>
+          {formatMoney(offers[0].price)}
+          <Text style={styles.bestHint}>
+            {offers.length > 1
+              ? `  lowest of ${offers.length} pharmacies`
+              : `  at ${offers[0].pharmacyName}`}
+          </Text>
+        </Text>
+      ) : null}
       {med.requiresPrescription ? (
         <View style={styles.mt}>
           <Banner
@@ -134,7 +156,19 @@ export function MedicineDetailScreen({
         </View>
       ) : null}
       {med.description ? (
-        <Text style={[typography.body, styles.mt]}>{med.description}</Text>
+        <>
+          <SectionTitle>About this medicine</SectionTitle>
+          <Text style={[typography.body, styles.desc]}>{med.description}</Text>
+        </>
+      ) : null}
+      {med.dosage ? (
+        <Card style={styles.dosage}>
+          <Text style={styles.dosageLabel}>How to take</Text>
+          <Text style={typography.body}>{med.dosage}</Text>
+          <Text style={[typography.small, styles.mtXs]}>
+            Always follow your doctor's or pharmacist's advice.
+          </Text>
+        </Card>
       ) : null}
 
       <SectionTitle>Available at</SectionTitle>
@@ -178,13 +212,47 @@ export function MedicineDetailScreen({
 }
 
 const styles = StyleSheet.create({
-  image: {
-    width: '100%',
-    height: 180,
-    borderRadius: radius.md,
-    backgroundColor: colors.surface,
-    marginBottom: spacing.md,
+  art: { marginBottom: spacing.md, borderRadius: radius.lg },
+  tagRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: spacing.sm,
   },
+  tag: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.primaryDark,
+    backgroundColor: colors.primaryLight,
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 999,
+    overflow: 'hidden',
+  },
+  rxTag: { color: '#fff', backgroundColor: colors.danger },
+  otcTag: { color: '#15803D', backgroundColor: '#DCFCE7' },
+  byline: { marginTop: 2 },
+  bestPrice: {
+    marginTop: spacing.md,
+    fontSize: 24,
+    fontWeight: '800',
+    color: colors.primaryDark,
+  },
+  bestHint: { fontSize: 13, fontWeight: '500', color: colors.textMuted },
+  desc: { lineHeight: 22 },
+  dosage: {
+    marginTop: spacing.md,
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primaryLight,
+  },
+  dosageLabel: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: colors.primaryDark,
+    marginBottom: 4,
+    textTransform: 'uppercase',
+  },
+  mtXs: { marginTop: spacing.xs },
   mt: { marginTop: spacing.md },
   flex: { flex: 1 },
   offer: { flexDirection: 'row', alignItems: 'center' },

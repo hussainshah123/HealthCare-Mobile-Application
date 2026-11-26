@@ -1,6 +1,6 @@
 /** Temporary Cloudflare Quick Tunnel; replace with a stable API host for production. */
 const SERVER_HOST =
-  'https://heel-acknowledge-baltimore-privilege.trycloudflare.com';
+  'https://rugby-translate-perception-trackbacks.trycloudflare.com';
 
 export const SERVER_URL: string = SERVER_HOST;
 

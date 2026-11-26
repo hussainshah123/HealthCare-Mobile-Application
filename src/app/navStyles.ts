@@ -1,9 +1,15 @@
 import { renderHeaderGradient } from '../components/HeaderGradient';
 import { colors } from '../theme';
 
-/** Teal header with white title, shared by every stack and tab navigator. */
+/**
+ * Rounded water-blue header (gradient + bubbles, see HeaderGradient) with a
+ * white title, shared by every stack and tab navigator. HeaderGradient paints
+ * the screen background colour behind its rounded corners so they blend in.
+ */
 export const headerOptions = {
-  headerStyle: { backgroundColor: colors.primary },
+  // Transparent so HeaderGradient shows: the native stack draws the custom
+  // background *under* its own header, which would otherwise paint over it.
+  headerStyle: { backgroundColor: 'transparent' },
   headerBackground: renderHeaderGradient,
   headerTintColor: colors.white,
   headerTitleStyle: { color: colors.white, fontWeight: '700' as const },
@@ -20,5 +26,7 @@ export const tabBarOptions = {
     borderTopColor: colors.border,
   },
   tabBarLabelStyle: { fontSize: 10, fontWeight: '600' as const },
+  // Tabs you are not looking at stop re-rendering, so switching stays quick.
+  freezeOnBlur: true,
   tabBarAllowFontScaling: false,
 };

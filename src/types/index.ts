@@ -103,10 +103,14 @@ export interface Category {
 export interface Medicine {
   id: string;
   name: string;
-  brand: string;
-  manufacturer: string;
-  description: string;
-  dosage: string;
+  brand: string | null;
+  manufacturer: string | null;
+  description: string | null;
+  dosage: string | null;
+  /** Tablet, Capsule, Syrup, Suspension, Drops, Cream, Ointment, Gel, Sachet, Injection */
+  form: string | null;
+  /** e.g. "Strip of 10 tablets" */
+  packSize: string | null;
   imageUrl: string | null;
   requiresPrescription: boolean;
   categoryId: string;

@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import {
   AccessibilityInfo,
   Animated,
@@ -555,13 +556,29 @@ export function MedicalBackdrop({
 
 const styles = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden' },
+  flex: { flex: 1 },
   pill: { position: 'absolute', top: 0 },
   wave: { position: 'absolute', left: 0, bottom: 0, width: WAVE_W * 2 },
 });
 
-/** `screenLayout` for navigators: puts the backdrop behind every screen. */
+/**
+ * Keeps tab screen content clear of the floating tab bar. The backdrop stays
+ * full-height, so its bubbles and waves show around the bar.
+ */
+function TabBarSpace({ children }: { children: React.ReactNode }) {
+  const barHeight = useContext(BottomTabBarHeightContext) ?? 0;
+  return (
+    <View style={[styles.flex, { paddingBottom: barHeight }]}>{children}</View>
+  );
+}
+
+/** `screenLayout` for tab navigators: backdrop behind every screen + room for the bar. */
 export function backdropLayout({ children }: { children: React.ReactNode }) {
-  return <MedicalBackdrop>{children}</MedicalBackdrop>;
+  return (
+    <MedicalBackdrop>
+      <TabBarSpace>{children}</TabBarSpace>
+    </MedicalBackdrop>
+  );
 }
 
 /** Same, but skips the nested tab navigator screen (its tabs have their own). */

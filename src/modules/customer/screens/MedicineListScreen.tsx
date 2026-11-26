@@ -4,11 +4,12 @@ import {
   FlatList,
   RefreshControl,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import { catalogueApi } from '../../../api/catalogue';
 import { EmptyState, ErrorState, Input, Loader } from '../../../components';
-import { colors, spacing } from '../../../theme';
+import { colors, spacing, typography } from '../../../theme';
 import { getErrorMessage } from '../../../utils/errors';
 import type { Medicine } from '../../../types';
 import { MedicineCard } from '../components/MedicineCard';
@@ -96,7 +97,16 @@ export function MedicineListScreen({
         <FlatList
           data={items}
           keyExtractor={m => m.id}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
           contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            total > 0 ? (
+              <Text style={styles.count}>
+                {total} product{total === 1 ? '' : 's'}
+              </Text>
+            ) : undefined
+          }
           renderItem={({ item }) => (
             <MedicineCard
               medicine={item}
@@ -133,6 +143,8 @@ export function MedicineListScreen({
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
   searchBar: { paddingHorizontal: spacing.lg, paddingTop: spacing.md },
-  list: { padding: spacing.lg, paddingTop: 0, flexGrow: 1 },
+  list: { padding: spacing.lg, paddingTop: spacing.sm, flexGrow: 1 },
+  row: { gap: spacing.md, marginBottom: spacing.md },
+  count: { ...typography.caption, marginBottom: spacing.sm },
   more: { marginVertical: spacing.lg },
 });
